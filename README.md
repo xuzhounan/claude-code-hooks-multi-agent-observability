@@ -14,7 +14,7 @@ This system provides complete observability into Claude Code agent behavior by c
 Claude Agents → Hook Scripts → HTTP POST → Bun Server → SQLite → WebSocket → Vue Client
 ```
 
-<video src="images/AgentDataFlowV2_compressed.mp4" controls autoplay loop muted width="100%"></video>
+![Agent Data Flow Animation](images/AgentDataFlowV2.gif)
 
 ## 📋 Setup Requirements
 
