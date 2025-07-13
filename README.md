@@ -1,10 +1,10 @@
 # Multi-Agent Observability System
 
-Real-time monitoring and visualization for Claude Code agents through comprehensive [hook event tracking](https://docs.anthropic.com/en/docs/claude-code/hooks). [Watch the full breakdown here](https://youtu.be/9ijnN985O_c).
+Real-time monitoring and visualization for Claude Code agents through comprehensive hook event tracking. You can watch the full breakdown [here](https://youtu.be/9ijnN985O_c).
 
 ## 🎯 Overview
 
-This system provides complete observability into Claude Code agent behavior by capturing, storing, and visualizing hook events in real-time. It enables monitoring of multiple concurrent agents with session tracking, event filtering, and live updates. 
+This system provides complete observability into Claude Code agent behavior by capturing, storing, and visualizing Claude Code [Hook events](https://docs.anthropic.com/en/docs/claude-code/hooks) in real-time. It enables monitoring of multiple concurrent agents with session tracking, event filtering, and live updates. 
 
 <img src="images/app.png" alt="Multi-Agent Observability Dashboard" style="max-width: 800px; width: 100%;">
 
