@@ -1,16 +1,20 @@
 # Multi-Agent Observability System
 
-Real-time monitoring and visualization for Claude Code agents through comprehensive hook event tracking.
+Real-time monitoring and visualization for Claude Code agents through comprehensive [hook event tracking](https://docs.anthropic.com/en/docs/claude-code/hooks). [Watch the full breakdown here](https://youtu.be/9ijnN985O_c).
 
 ## 🎯 Overview
 
-This system provides complete observability into Claude Code agent behavior by capturing, storing, and visualizing hook events in real-time. It enables monitoring of multiple concurrent agents with session tracking, event filtering, and live updates.
+This system provides complete observability into Claude Code agent behavior by capturing, storing, and visualizing hook events in real-time. It enables monitoring of multiple concurrent agents with session tracking, event filtering, and live updates. 
+
+<img src="images/app.png" alt="Multi-Agent Observability Dashboard" style="max-width: 800px; width: 100%;">
 
 ## 🏗️ Architecture
 
 ```
 Claude Agents → Hook Scripts → HTTP POST → Bun Server → SQLite → WebSocket → Vue Client
 ```
+
+<video src="images/AgentDataFlowV2_compressed.mp4" controls autoplay loop muted width="100%"></video>
 
 ## 📋 Setup Requirements
 
@@ -335,3 +339,10 @@ This command will:
 - Show you exactly what changes were made
 
 This ensures your hooks work correctly regardless of where Claude Code is executed from.
+
+## Master AI Coding
+> And prepare for Agentic Engineering
+
+Learn to code with AI with foundational [Principles of AI Coding](https://agenticengineer.com/principled-ai-coding?y=cchookmast)
+
+Follow the [IndyDevDan youtube channel](https://www.youtube.com/@indydevdan) for more AI coding tips and tricks.
