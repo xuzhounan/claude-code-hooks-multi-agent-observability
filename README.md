@@ -345,6 +345,6 @@ This ensures your hooks work correctly regardless of where Claude Code is execut
 ## Master AI Coding
 > And prepare for Agentic Engineering
 
-Learn to code with AI with foundational [Principles of AI Coding](https://agenticengineer.com/principled-ai-coding?y=cchookmast)
+Learn to code with AI with foundational [Principles of AI Coding](https://agenticengineer.com/principled-ai-coding?y=cchookobvs)
 
 Follow the [IndyDevDan youtube channel](https://www.youtube.com/@indydevdan) for more AI coding tips and tricks.
