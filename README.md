@@ -150,6 +150,8 @@ claude-code-hooks-multi-agent-observability/
 
 ### 1. Hook System (`.claude/hooks/`)
 
+> If you want to master claude code hooks watch [this video](https://github.com/disler/claude-code-hooks-mastery)
+
 The hook system intercepts Claude Code lifecycle events:
 
 - **`send_event.py`**: Core script that sends event data to the observability server
