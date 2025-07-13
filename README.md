@@ -1,6 +1,6 @@
 # Multi-Agent Observability System
 
-Real-time monitoring and visualization for Claude Code agents through comprehensive hook event tracking. You can watch the full breakdown [here](https://youtu.be/9ijnN985O_c).
+Real-time monitoring and visualization for Claude Code agents through comprehensive hook event tracking. You can watch the [full breakdown here](https://youtu.be/9ijnN985O_c).
 
 ## 🎯 Overview
 
