@@ -70,7 +70,7 @@
       <div class="flex items-center justify-between mb-2 mobile:hidden">
         <div v-if="toolInfo" class="text-base text-[var(--theme-text-secondary)] font-semibold">
           <span class="font-medium">{{ toolInfo.tool }}</span>
-          <span v-if="toolInfo.detail" class="ml-2 text-[var(--theme-text-tertiary)]">{{ toolInfo.detail }}</span>
+          <span v-if="toolInfo.detail" class="ml-2 text-[var(--theme-text-tertiary)]" :class="{ 'italic': event.hook_event_type === 'UserPromptSubmit' }">{{ toolInfo.detail }}</span>
         </div>
         
         <!-- Summary aligned to the right -->
@@ -86,7 +86,7 @@
       <div class="space-y-2 hidden mobile:block mb-2">
         <div v-if="toolInfo" class="text-sm text-[var(--theme-text-secondary)] font-semibold w-full">
           <span class="font-medium">{{ toolInfo.tool }}</span>
-          <span v-if="toolInfo.detail" class="ml-2 text-[var(--theme-text-tertiary)]">{{ toolInfo.detail }}</span>
+          <span v-if="toolInfo.detail" class="ml-2 text-[var(--theme-text-tertiary)]" :class="{ 'italic': event.hook_event_type === 'UserPromptSubmit' }">{{ toolInfo.detail }}</span>
         </div>
         
         <div v-if="event.summary" class="w-full px-2 py-1 bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/30 rounded-lg shadow-md">
@@ -183,9 +183,10 @@ const hookEmoji = computed(() => {
     'Notification': '🔔',
     'Stop': '🛑',
     'SubagentStop': '👥',
-    'PreCompact': '📦'
+    'PreCompact': '📦',
+    'UserPromptSubmit': '💬'
   };
-  return emojiMap[props.event.hook_event_type] || '📌';
+  return emojiMap[props.event.hook_event_type] || '❓';
 });
 
 const borderColorClass = computed(() => {
@@ -214,6 +215,15 @@ const formattedPayload = computed(() => {
 const toolInfo = computed(() => {
   const payload = props.event.payload;
   
+  // Handle UserPromptSubmit events
+  if (props.event.hook_event_type === 'UserPromptSubmit' && payload.prompt) {
+    return {
+      tool: 'Prompt:',
+      detail: `"${payload.prompt.slice(0, 100)}${payload.prompt.length > 100 ? '...' : ''}"`
+    };
+  }
+  
+  // Handle tool-based events
   if (payload.tool_name) {
     const info: { tool: string; detail?: string } = { tool: payload.tool_name };
     

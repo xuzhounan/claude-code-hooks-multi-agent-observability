@@ -5,8 +5,9 @@ const eventTypeToEmoji: Record<string, string> = {
   'Stop': '🛑',
   'SubagentStop': '👥',
   'PreCompact': '📦',
+  'UserPromptSubmit': '💬',
   // Default
-  'default': '📌'
+  'default': '❓'
 };
 
 export function useEventEmojis() {

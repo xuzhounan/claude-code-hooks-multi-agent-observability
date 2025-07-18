@@ -46,7 +46,7 @@ To integrate the observability hooks into your projects:
    {
      "hooks": {
        "PreToolUse": [{
-         "matcher": ".*",
+         "matcher": "",
          "hooks": [
            {
              "type": "command",
@@ -54,11 +54,36 @@ To integrate the observability hooks into your projects:
            },
            {
              "type": "command",
-             "command": "uv run .claude/hooks/send_event.py --source-app YOUR_PROJECT_NAME --event-type PreToolUse"
+             "command": "uv run .claude/hooks/send_event.py --source-app YOUR_PROJECT_NAME --event-type PreToolUse --summarize"
            }
          ]
        }],
-       // ... (mirror the above for other event types)
+       "PostToolUse": [{
+         "matcher": "",
+         "hooks": [
+           {
+             "type": "command",
+             "command": "uv run .claude/hooks/post_tool_use.py"
+           },
+           {
+             "type": "command",
+             "command": "uv run .claude/hooks/send_event.py --source-app YOUR_PROJECT_NAME --event-type PostToolUse --summarize"
+           }
+         ]
+       }],
+       "UserPromptSubmit": [{
+         "hooks": [
+           {
+             "type": "command",
+             "command": "uv run .claude/hooks/user_prompt_submit.py --log-only"
+           },
+           {
+             "type": "command",
+             "command": "uv run .claude/hooks/send_event.py --source-app YOUR_PROJECT_NAME --event-type UserPromptSubmit --summarize"
+           }
+         ]
+       }]
+       // ... (similar patterns for Notification, Stop, SubagentStop, PreCompact)
      }
    }
    ```
@@ -133,6 +158,7 @@ claude-code-hooks-multi-agent-observability/
 │   │   ├── pre_tool_use.py    # Tool validation & blocking
 │   │   ├── post_tool_use.py   # Result logging
 │   │   ├── notification.py    # User interaction events
+│   │   ├── user_prompt_submit.py # User prompt logging & validation
 │   │   ├── stop.py           # Session completion
 │   │   └── subagent_stop.py  # Subagent completion
 │   │
@@ -163,6 +189,7 @@ The hook system intercepts Claude Code lifecycle events:
   - `pre_tool_use.py`: Blocks dangerous commands, validates tool usage
   - `post_tool_use.py`: Captures execution results and outputs
   - `notification.py`: Tracks user interaction points
+  - `user_prompt_submit.py`: Logs user prompts, supports validation (v1.0.54+)
   - `stop.py`: Records session completion with optional chat history
   - `subagent_stop.py`: Monitors subagent task completion
 
@@ -222,14 +249,23 @@ Vue 3 application with real-time visualization:
 
 ## 🎨 Event Types & Visualization
 
-| Event Type   | Emoji | Purpose               | Color Coding  |
-| ------------ | ----- | --------------------- | ------------- |
-| PreToolUse   | 🔧     | Before tool execution | Session-based |
-| PostToolUse  | ✅     | After tool completion | Session-based |
-| Notification | 🔔     | User interactions     | Session-based |
-| Stop         | 🛑     | Response completion   | Session-based |
-| SubagentStop | 👥     | Subagent finished     | Session-based |
-| PreCompact   | 📦     | Context compaction    | Session-based |
+| Event Type   | Emoji | Purpose               | Color Coding  | Special Display |
+| ------------ | ----- | --------------------- | ------------- | --------------- |
+| PreToolUse   | 🔧     | Before tool execution | Session-based | Tool name & details |
+| PostToolUse  | ✅     | After tool completion | Session-based | Tool name & results |
+| Notification | 🔔     | User interactions     | Session-based | Notification message |
+| Stop         | 🛑     | Response completion   | Session-based | Summary & chat transcript |
+| SubagentStop | 👥     | Subagent finished     | Session-based | Subagent details |
+| PreCompact   | 📦     | Context compaction    | Session-based | Compaction details |
+| UserPromptSubmit | 💬 | User prompt submission | Session-based | Prompt: _"user message"_ (italic) |
+
+### UserPromptSubmit Event (v1.0.54+)
+
+The `UserPromptSubmit` hook captures every user prompt before Claude processes it. In the UI:
+- Displays as `Prompt: "user's message"` in italic text
+- Shows the actual prompt content inline (truncated to 100 chars)
+- Summary appears on the right side when AI summarization is enabled
+- Useful for tracking user intentions and conversation flow
 
 ## 🔌 Integration
 
