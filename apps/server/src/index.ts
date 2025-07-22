@@ -36,6 +36,17 @@ const server = Bun.serve({
       return new Response(null, { headers });
     }
     
+    // GET /health - Health check endpoint
+    if (url.pathname === '/health' && req.method === 'GET') {
+      return new Response(JSON.stringify({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        server: 'Multi-Agent Observability Server'
+      }), {
+        headers: { ...headers, 'Content-Type': 'application/json' }
+      });
+    }
+    
     // POST /events - Receive new events
     if (url.pathname === '/events' && req.method === 'POST') {
       try {
