@@ -2,7 +2,6 @@
 # /// script
 # requires-python = ">=3.8"
 # dependencies = [
-#     "anthropic",
 #     "python-dotenv",
 # ]
 # ///
@@ -14,55 +13,59 @@ from .llm.anth import prompt_llm
 
 def generate_event_summary(event_data: Dict[str, Any]) -> Optional[str]:
     """
-    Generate a concise one-sentence summary of a hook event for engineers.
+    Generate a concise summary of a hook event for engineers.
+    
+    For Claude Max users, creates rule-based summaries without API dependency.
 
     Args:
         event_data: The hook event data containing event_type, payload, etc.
 
     Returns:
-        str: A one-sentence summary, or None if generation fails
+        str: A basic event summary, or None if generation fails
     """
     event_type = event_data.get("hook_event_type", "Unknown")
     payload = event_data.get("payload", {})
 
-    # Convert payload to string representation
-    payload_str = json.dumps(payload, indent=2)
-    if len(payload_str) > 1000:
-        payload_str = payload_str[:1000] + "..."
-
-    prompt = f"""Generate a one-sentence summary of this Claude Code hook event payload for an engineer monitoring the system.
-
-Event Type: {event_type}
-Payload:
-{payload_str}
-
-Requirements:
-- ONE sentence only (no period at the end)
-- Focus on the key action or information in the payload
-- Be specific and technical
-- Keep under 15 words
-- Use present tense
-- No quotes or formatting
-- Return ONLY the summary text
-
-Examples:
-- Reads configuration file from project root
-- Executes npm install to update dependencies
-- Searches web for React documentation
-- Edits database schema to add user table
-- Agent responds with implementation plan
-
-Generate the summary based on the payload:"""
-
-    summary = prompt_llm(prompt)
-
-    # Clean up the response
-    if summary:
-        summary = summary.strip().strip('"').strip("'").strip(".")
-        # Take only the first line if multiple
-        summary = summary.split("\n")[0].strip()
-        # Ensure it's not too long
-        if len(summary) > 100:
-            summary = summary[:97] + "..."
-
-    return summary
+    # Rule-based summary generation for Claude Max users
+    try:
+        if event_type == "PreToolUse":
+            tool_name = payload.get("tool_name", "unknown tool")
+            return f"About to execute {tool_name}"
+        
+        elif event_type == "PostToolUse":
+            tool_name = payload.get("tool_name", "unknown tool")
+            return f"Completed execution of {tool_name}"
+        
+        elif event_type == "UserPromptSubmit":
+            prompt = payload.get("prompt", "")
+            if prompt:
+                # Get first few words for summary
+                words = prompt.split()[:5]
+                preview = " ".join(words)
+                if len(words) >= 5:
+                    preview += "..."
+                return f"User prompt: {preview}"
+            return "User submitted prompt"
+        
+        elif event_type == "Notification":
+            message = payload.get("message", "")
+            if message:
+                # Get first few words for summary  
+                words = message.split()[:5]
+                preview = " ".join(words)
+                if len(words) >= 5:
+                    preview += "..."
+                return f"Notification: {preview}"
+            return "System notification"
+        
+        elif event_type == "Stop":
+            return "Task completed"
+        
+        elif event_type == "SubagentStop":
+            return "Sub-agent task completed"
+        
+        else:
+            return f"Hook event: {event_type}"
+            
+    except Exception:
+        return f"Event: {event_type}"

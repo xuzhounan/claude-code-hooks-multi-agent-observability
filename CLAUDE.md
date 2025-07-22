@@ -85,8 +85,11 @@ The system monitors these Claude Code lifecycle events:
 ### Environment Variables
 Project root requires `.env` file:
 ```bash
-ANTHROPIC_API_KEY=your_key_here
+# For Claude Max users (no API key required):
 ENGINEER_NAME=your_name
+
+# Optional for API users:
+# ANTHROPIC_API_KEY=your_key_here
 ```
 
 Client requires `apps/client/.env` file:

@@ -2,7 +2,6 @@
 # /// script
 # requires-python = ">=3.8"
 # dependencies = [
-#     "anthropic",
 #     "python-dotenv",
 # ]
 # ///
@@ -14,80 +13,66 @@ from dotenv import load_dotenv
 
 def prompt_llm(prompt_text):
     """
-    Base Anthropic LLM prompting method using fastest model.
+    Placeholder LLM prompting method for Claude Max users (no API key needed).
+    
+    Since Claude Max users don't have API keys, this function returns None
+    to gracefully handle the absence of LLM completion features.
 
     Args:
         prompt_text (str): The prompt to send to the model
 
     Returns:
-        str: The model's response text, or None if error
+        str: Always returns None for Claude Max users
     """
-    load_dotenv()
-
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    if not api_key:
-        return None
-
-    try:
-        import anthropic
-
-        client = anthropic.Anthropic(api_key=api_key)
-
-        message = client.messages.create(
-            model="claude-3-5-haiku-20241022",  # Fastest Anthropic model
-            max_tokens=100,
-            temperature=0.7,
-            messages=[{"role": "user", "content": prompt_text}],
-        )
-
-        return message.content[0].text.strip()
-
-    except Exception:
-        return None
+    # Claude Max users don't need API keys, so we gracefully disable LLM features
+    return None
 
 
 def generate_completion_message():
     """
-    Generate a completion message using Anthropic LLM.
+    Generate a completion message for Claude Max users (without API dependency).
 
     Returns:
-        str: A natural language completion message, or None if error
+        str: A predefined completion message
     """
+    import random
+    
     engineer_name = os.getenv("ENGINEER_NAME", "").strip()
 
     if engineer_name:
-        name_instruction = f"Sometimes (about 30% of the time) include the engineer's name '{engineer_name}' in a natural way."
-        examples = f"""Examples of the style: 
-- Standard: "Work complete!", "All done!", "Task finished!", "Ready for your next move!"
-- Personalized: "{engineer_name}, all set!", "Ready for you, {engineer_name}!", "Complete, {engineer_name}!", "{engineer_name}, we're done!" """
+        personalized_messages = [
+            f"{engineer_name}, all set!",
+            f"Ready for you, {engineer_name}!",
+            f"Complete, {engineer_name}!",
+            f"{engineer_name}, we're done!",
+            f"Task finished, {engineer_name}!",
+            f"Ready for next move, {engineer_name}!"
+        ]
+        standard_messages = [
+            "Work complete!",
+            "All done!",
+            "Task finished!",
+            "Ready for your next move!",
+            "Mission accomplished!",
+            "Good to go!"
+        ]
+        # 30% chance for personalized, 70% for standard
+        if random.random() < 0.3:
+            return random.choice(personalized_messages)
+        else:
+            return random.choice(standard_messages)
     else:
-        name_instruction = ""
-        examples = """Examples of the style: "Work complete!", "All done!", "Task finished!", "Ready for your next move!" """
-
-    prompt = f"""Generate a short, concise, friendly completion message for when an AI coding assistant finishes a task. 
-
-Requirements:
-- Keep it under 10 words
-- Make it positive and future focused
-- Use natural, conversational language
-- Focus on completion/readiness
-- Do NOT include quotes, formatting, or explanations
-- Return ONLY the completion message text
-{name_instruction}
-
-{examples}
-
-Generate ONE completion message:"""
-
-    response = prompt_llm(prompt)
-
-    # Clean up response - remove quotes and extra formatting
-    if response:
-        response = response.strip().strip('"').strip("'").strip()
-        # Take first line if multiple lines
-        response = response.split("\n")[0].strip()
-
-    return response
+        standard_messages = [
+            "Work complete!",
+            "All done!",
+            "Task finished!",
+            "Ready for your next move!",
+            "Mission accomplished!",
+            "Good to go!",
+            "Task complete!",
+            "Ready!"
+        ]
+        return random.choice(standard_messages)
 
 
 def main():
@@ -105,7 +90,7 @@ def main():
             if response:
                 print(response)
             else:
-                print("Error calling Anthropic API")
+                print("LLM features disabled for Claude Max users (no API key required)")
     else:
         print("Usage: ./anth.py 'your prompt here' or ./anth.py --completion")
 
