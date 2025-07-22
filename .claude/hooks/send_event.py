@@ -15,49 +15,29 @@ import json
 import sys
 import os
 import argparse
-import urllib.request
-import urllib.error
 from datetime import datetime
 from utils.summarizer import generate_event_summary
+from utils.proxy import send_json_event
 
 def send_event_to_server(event_data, server_url='http://localhost:4000/events', debug=False):
     """Send event data to the observability server."""
     if debug:
         print(f"🔍 Debug: Sending event to {server_url}", file=sys.stderr)
         print(f"🔍 Debug: Event data: {json.dumps(event_data, indent=2)}", file=sys.stderr)
-        
+    
     try:
-        # Prepare the request
-        req = urllib.request.Request(
-            server_url,
-            data=json.dumps(event_data).encode('utf-8'),
-            headers={
-                'Content-Type': 'application/json',
-                'User-Agent': 'Claude-Code-Hook/1.0'
-            }
+        success = send_json_event(
+            url=server_url,
+            event_data=event_data,
+            timeout=10,
+            debug=debug
         )
         
-        if debug:
-            print(f"🔍 Debug: Request headers: {req.headers}", file=sys.stderr)
+        if not success:
+            print("Failed to send event to server", file=sys.stderr)
         
-        # Send the request
-        with urllib.request.urlopen(req, timeout=10) as response:
-            response_body = response.read().decode('utf-8')
-            if debug:
-                print(f"🔍 Debug: Response status: {response.status}", file=sys.stderr)
-                print(f"🔍 Debug: Response body: {response_body}", file=sys.stderr)
-                
-            if response.status == 200:
-                return True
-            else:
-                print(f"Server returned status: {response.status}", file=sys.stderr)
-                return False
-                
-    except urllib.error.URLError as e:
-        if debug:
-            print(f"🔍 Debug: URLError details: {type(e).__name__}: {e}", file=sys.stderr)
-        print(f"Failed to send event: {e}", file=sys.stderr)
-        return False
+        return success
+        
     except Exception as e:
         if debug:
             print(f"🔍 Debug: Exception details: {type(e).__name__}: {e}", file=sys.stderr)
